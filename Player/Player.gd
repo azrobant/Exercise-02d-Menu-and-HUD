@@ -7,7 +7,6 @@ var speed = 5.0
 var max_speed = 400.0
 var health = 1
 
-var Effects = null
 onready var Explosion = load("res://Effects/Explosion.tscn")
 
 onready var Bullet = load("res://Player/Bullet.tscn")
@@ -22,8 +21,8 @@ func _physics_process(_delta):
 	velocity = velocity + get_input()*speed
 	velocity = velocity.normalized() * clamp(velocity.length(), 0, max_speed)
 	velocity = move_and_slide(velocity, Vector2.ZERO)
-	position.x = wrapf(position.x, 0, 1024)
-	position.y = wrapf(position.y, 0, 600)
+	position.x = wrapf(position.x, 0, Global.VP.x)
+	position.y = wrapf(position.y, 0, Global.VP.y)
 
 	if Input.is_action_just_pressed("shoot"):
 		var Effects = get_node_or_null("/root/Game/Effects")
@@ -50,6 +49,7 @@ func get_input():
 func damage(d):
 	health -= d
 	if health <= 0:
+		Global.update_lives(1)
 		Effects = get_node_or_null("/root/Game/Effects")
 		if Effects != null:
 			var explosion = Explosion.instance()
